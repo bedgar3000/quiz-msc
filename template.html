@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Implicaciones del Nuevo Código Penal en las Organizaciones</title>
+  <style>
+    :root {
+      --navy: #14243a;
+      --blue: #2457a7;
+      --blue-light: #edf4ff;
+      --ink: #253247;
+      --muted: #65748a;
+      --line: #dce4ee;
+      --bg: #f4f7fb;
+      --green: #18794e;
+      --green-bg: #eaf7ef;
+      --red: #b42318;
+      --red-bg: #fff0ee;
+      --white: #fff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    .hero {
+      background: linear-gradient(125deg, #14243a, #2457a7);
+      color: white;
+      padding: 42px 20px 56px;
+    }
+    .hero-inner, main { width: min(900px, calc(100% - 32px)); margin: 0 auto; }
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: .76rem;
+      font-weight: 800;
+      opacity: .8;
+    }
+    h1 { margin: 10px 0 8px; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; }
+    .hero p { max-width: 650px; margin: 0; color: #e2ebfa; }
+    main { margin-top: -25px; padding-bottom: 56px; }
+    .progress-card, .question-card, .result-card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(20, 36, 58, .06);
+    }
+    .progress-card { padding: 18px 22px; margin-bottom: 18px; }
+    .progress-top { display: flex; justify-content: space-between; gap: 12px; font-size: .9rem; font-weight: 700; }
+    .progress-track { height: 8px; border-radius: 99px; background: #e8edf5; overflow: hidden; margin-top: 12px; }
+    .progress-fill { width: 0%; height: 100%; background: var(--blue); transition: width .25s ease; }
+    .question-card { display: none; padding: clamp(20px, 4vw, 30px); margin-bottom: 18px; }
+    .question-card.active { display: block; }
+    .step-nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 18px; }
+    .step-note { color: var(--muted); font-size: .9rem; font-weight: 650; }
+    .question-heading { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
+    .number {
+      display: grid; place-items: center; flex: 0 0 42px; height: 42px;
+      border-radius: 12px; color: var(--blue); background: var(--blue-light); font-weight: 800;
+    }
+    h2 { margin: 0 0 6px; font-size: 1.15rem; line-height: 1.45; }
+    .instruction { margin: 0; color: var(--muted); font-size: .9rem; }
+    .options { display: grid; gap: 10px; }
+    .option {
+      display: flex; align-items: flex-start; gap: 12px; padding: 14px 15px;
+      border: 1px solid var(--line); border-radius: 12px; cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .option:hover { border-color: #8aa9d9; background: #f9fbff; }
+    .option:has(input:checked) { border-color: var(--blue); background: var(--blue-light); }
+    .option input { margin-top: 5px; accent-color: var(--blue); flex: 0 0 auto; }
+    .option span { flex: 1; }
+    .option input:disabled { cursor: default; }
+    .feedback { display: none; padding: 13px 15px; border-radius: 10px; margin-top: 14px; font-size: .93rem; }
+    .feedback.show { display: block; }
+    .feedback.good { color: var(--green); background: var(--green-bg); }
+    .feedback.bad { color: var(--red); background: var(--red-bg); }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+    button {
+      appearance: none; border: 0; border-radius: 11px; padding: 13px 20px;
+      font: inherit; font-weight: 750; cursor: pointer;
+    }
+    button:focus-visible, input:focus-visible { outline: 3px solid #8cb5ff; outline-offset: 3px; }
+    .primary { color: white; background: var(--blue); }
+    .primary:hover { background: #194788; }
+    .secondary { color: var(--navy); background: #e8edf5; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .result-card { display: none; padding: clamp(22px, 4vw, 34px); margin-top: 20px; }
+    .result-card.show { display: block; }
+    .score { font-size: clamp(2.3rem, 7vw, 3.8rem); font-weight: 850; color: var(--blue); line-height: 1.1; margin: 8px 0; }
+    .result-card p { color: var(--muted); }
+    .result-details { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+    footer { text-align: center; padding: 0 16px 28px; color: var(--muted); font-size: .82rem; }
+    @media (max-width: 520px) {
+      .hero { padding-top: 32px; }
+      .progress-card { padding: 16px; }
+      .question-heading { gap: 10px; }
+      .number { flex-basis: 36px; height: 36px; }
+      .actions button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">Preguntas prácticas</div>
+      <h1>Implicaciones del Nuevo Código Penal en las Organizaciones</h1>
+      <p>Responde estas 5 preguntas y revisa los resultados al final</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="progress-card" aria-label="Progreso del cuestionario">
+      <div class="progress-top">
+        <span id="progressLabel">0 de 5 preguntas respondidas</span>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </section>
+
+    <form id="quizForm">
+      <section class="question-card" data-question="q1">
+        <div class="question-heading">
+          <div class="number">01</div>
+          <div>
+            <h2>La función de Recursos Humanos en materia de “cumplimiento” es:</h2>
+            <p class="instruction">Selecciona una respuesta.</p>
+          </div>
+        </div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q1" value="A"><span><strong>A.</strong> Irrelevante</span></label>
+          <label class="option"><input type="radio" name="q1" value="B"><span><strong>B.</strong> Fundamental</span></label>
+        </div>
+        <div class="feedback" aria-live="polite"></div>
+      </section>
+
+      <section class="question-card" data-question="q2">
+        <div class="question-heading">
+          <div class="number">02</div>
+          <div>
+            <h2>Si es evidente que un empleado ha desviado los fondos administrados hacia cuentas no autorizadas, ¿qué procede?</h2>
+            <p class="instruction">Selecciona todas las respuestas correctas (pista: hay más de una respuesta correcta)</p>
+          </div>
+        </div>
+        <div class="options">
+          <label class="option"><input type="checkbox" name="q2" value="A"><span><strong>A.</strong> Desvincularlo de la empresa</span></label>
+          <label class="option"><input type="checkbox" name="q2" value="B"><span><strong>B.</strong> Entregarle una amonestación</span></label>
+          <label class="option"><input type="checkbox" name="q2" value="C"><span><strong>C.</strong> Comunicarlo a las autoridades competentes</span></label>
+          <label class="option"><input type="checkbox" name="q2" value="D"><span><strong>D.</strong> Sugerir su transferencia a otra empresa vinculada al grupo empresarial</span></label>
+        </div>
+        <div class="feedback" aria-live="polite"></div>
+      </section>
+
+      <section class="question-card" data-question="q3">
+        <div class="question-heading">
+          <div class="number">03</div>
+          <div>
+            <h2>La implementación del Programa de Cumplimiento Penal:</h2>
+            <p class="instruction">Selecciona una respuesta.</p>
+          </div>
+        </div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q3" value="A"><span><strong>A.</strong> Asegura la no responsabilidad de la empresa</span></label>
+          <label class="option"><input type="radio" name="q3" value="B"><span><strong>B.</strong> Puede atenuar o eliminar la responsabilidad penal de la empresa</span></label>
+        </div>
+        <div class="feedback" aria-live="polite"></div>
+      </section>
+
+      <section class="question-card" data-question="q4">
+        <div class="question-heading">
+          <div class="number">04</div>
+          <div>
+            <h2>Una empresa tiene un Programa de Cumplimiento Penal relativamente bueno. Sin embargo, un departamento ha incurrido por primera vez en faltas menores contrarias a los estándares establecidos. ¿Qué debe hacer la empresa?</h2>
+            <p class="instruction">Selecciona una respuesta.</p>
+          </div>
+        </div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q4" value="A"><span><strong>A.</strong> No amonestar porque son faltas menores sin incidencia pública ni trascendencia interna</span></label>
+          <label class="option"><input type="radio" name="q4" value="B"><span><strong>B.</strong> Desvincular a los empleados involucrados (desahucio)</span></label>
+          <label class="option"><input type="radio" name="q4" value="C"><span><strong>C.</strong> Imponer medidas disciplinarias más ligeras, por ejemplo, coaching o amonestación</span></label>
+        </div>
+        <div class="feedback" aria-live="polite"></div>
+      </section>
+
+      <section class="question-card" data-question="q5">
+        <div class="question-heading">
+          <div class="number">05</div>
+          <div>
+            <h2>Elige las unidades del negocio que se vinculan con el compliance:</h2>
+            <p class="instruction">Selecciona una respuesta.</p>
+          </div>
+        </div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q5" value="A"><span><strong>A.</strong> Gerencia / Dirección</span></label>
+          <label class="option"><input type="radio" name="q5" value="B"><span><strong>B.</strong> Legal</span></label>
+          <label class="option"><input type="radio" name="q5" value="C"><span><strong>C.</strong> Financiera</span></label>
+          <label class="option"><input type="radio" name="q5" value="D"><span><strong>D.</strong> Operaciones</span></label>
+          <label class="option"><input type="radio" name="q5" value="E"><span><strong>E.</strong> Comercial</span></label>
+          <label class="option"><input type="radio" name="q5" value="F"><span><strong>F.</strong> Tecnología</span></label>
+          <label class="option"><input type="radio" name="q5" value="G"><span><strong>G.</strong> Recursos Humanos</span></label>
+          <label class="option"><input type="radio" name="q5" value="H"><span><strong>H.</strong> Todas las anteriores</span></label>
+        </div>
+        <div class="feedback" aria-live="polite"></div>
+      </section>
+
+      <div class="step-nav">
+        <button class="secondary" type="button" id="prevBtn" disabled>Anterior</button>
+        <span class="step-note" id="stepNote">Pregunta 1 de 5</span>
+        <button class="primary" type="button" id="nextBtn">Siguiente</button>
+      </div>
+      <div class="actions">
+        <button class="primary" type="button" id="submitBtn" hidden>Finalizar y corregir</button>
+        <button class="secondary" type="button" id="resetBtn">Reiniciar quiz</button>
+      </div>
+    </form>
+
+    <section class="result-card" id="resultCard" aria-live="polite">
+      <div class="eyebrow" style="color:var(--muted)">Resultado final</div>
+      <h2 id="resultTitle">Quiz completado</h2>
+      <div class="score" id="scoreText">0/5</div>
+      <p id="resultMessage"></p>
+      <div class="result-details" id="resultDetails"></div>
+      <div class="actions"><button class="primary" type="button" id="reviewBtn">Revisar respuestas</button></div>
+    </section>
+  </main>
+
+  <footer>Cuestionario de formación interna · Compliance</footer>
+
+  <script>
+    const answerKey = {
+      q1: ["B"],
+      q2: ["A", "C"],
+      q3: ["B"],
+      q4: ["C"],
+      q5: ["H"]
+    };
+
+    const feedbackText = {
+      q1: {
+        A: "Recursos Humanos es fundamental en materia de cumplimiento: participa desde la contratación de personas con los perfiles indicados y acompaña durante toda la vida laboral, orientando o disciplinando ante violaciones menores y desvinculando a quienes presenten un perfil de riesgo mayor.",
+        B: "Recursos Humanos cumple un papel fundamental desde la contratación y durante toda la vida laboral, contribuyendo a prevenir, detectar y gestionar incumplimientos."
+      },
+      q2: {
+        A: "La desvinculación puede ser una medida procedente ante un hecho grave, siguiendo la investigación y los procedimientos legales y laborales aplicables.",
+        B: "Entregar una amonestación no es suficiente ante la seriedad del hecho.",
+        C: "Comunicarlo a las autoridades competentes permite que los hechos sean evaluados por las instancias correspondientes.",
+        D: "Transferir a un empleado con este perfil es mover el problema a otro lugar y no demuestra voluntad de cumplimiento."
+      },
+      q3: {
+        A: "Contar con un Programa de Cumplimiento Penal no es suficiente para asegurar la no responsabilidad de la empresa.",
+        B: "Un Programa de Cumplimiento Penal eficaz puede, según la legislación aplicable y las circunstancias del caso, atenuar o excluir la responsabilidad penal de la empresa."
+      },
+      q4: {
+        A: "Las faltas en materia de cumplimiento deben abordarse siempre, aunque sean leves: las pequeñas faltas de hoy pueden convertirse en las grandes faltas del futuro.",
+        B: "Dado que se trata de una falta leve, la terminación del contrato podría ser excesiva si no existen precedentes. Estas fallas pueden convertirse en oportunidades de aprendizaje para los empleados y la empresa.",
+        C: "Las medidas disciplinarias proporcionales, como el coaching o una amonestación, ayudan a corregir faltas leves y prevenir su repetición."
+      },
+      q5: {
+        A: "La Gerencia y Dirección se vinculan con el compliance, pero no son las únicas áreas responsables: también participan las demás unidades.",
+        B: "El área Legal se vincula con el compliance, pero también lo hacen las demás unidades del negocio.",
+        C: "El área Financiera se vincula con el compliance, pero también lo hacen las demás unidades del negocio.",
+        D: "Operaciones se vincula con el compliance, pero también lo hacen las demás unidades del negocio.",
+        E: "El área Comercial se vincula con el compliance, pero también lo hacen las demás unidades del negocio.",
+        F: "Tecnología se vincula con el compliance, pero también lo hacen las demás unidades del negocio.",
+        G: "Recursos Humanos se vincula con el compliance, pero también lo hacen las demás unidades del negocio.",
+        H: "Todas las unidades mencionadas se vinculan con el compliance; el cumplimiento es una responsabilidad transversal."
+      }
+    };
+
+    const form = document.getElementById("quizForm");
+    const cards = [...document.querySelectorAll(".question-card")];
+    const progressLabel = document.getElementById("progressLabel");
+    const progressPercent = document.getElementById("progressPercent");
+    const progressFill = document.getElementById("progressFill");
+    const resultCard = document.getElementById("resultCard");
+    let submitted = false;
+    let currentStep = 0;
+
+    function showStep(index) {
+      currentStep = Math.max(0, Math.min(index, cards.length - 1));
+      cards.forEach((card, i) => card.classList.toggle("active", i === currentStep));
+      document.getElementById("prevBtn").disabled = currentStep === 0 || submitted;
+      document.getElementById("nextBtn").hidden = currentStep === cards.length - 1 || submitted;
+      document.getElementById("submitBtn").hidden = currentStep !== cards.length - 1 || submitted;
+      document.getElementById("stepNote").textContent = `Pregunta ${currentStep + 1} de ${cards.length}`;
+    }
+
+    function selectedValues(questionId) {
+      return [...form.querySelectorAll(`input[name="${questionId}"]:checked`)]
+        .map(input => input.value).sort();
+    }
+
+    function sameAnswers(selected, correct) {
+      return selected.length === correct.length &&
+        selected.every((value, index) => value === [...correct].sort()[index]);
+    }
+
+    function updateProgress() {
+      const answered = Object.keys(answerKey).filter(id => selectedValues(id).length > 0).length;
+      const percent = Math.round(answered / cards.length * 100);
+      progressLabel.textContent = `${answered} de ${cards.length} preguntas respondidas`;
+      progressPercent.textContent = `${percent}%`;
+      progressFill.style.width = `${percent}%`;
+    }
+
+    function renderFeedback(card, questionId, selected, isCorrect) {
+      const box = card.querySelector(".feedback");
+      let messages = [];
+
+      if (questionId === "q2") {
+        if (selected.includes("B")) messages.push(feedbackText.q2.B);
+        if (selected.includes("D")) messages.push(feedbackText.q2.D);
+        if (!selected.includes("A")) messages.push("Revisa la opción de desvinculación, que forma parte de las respuestas esperadas.");
+        if (!selected.includes("C")) messages.push("Revisa la comunicación a las autoridades competentes, que también forma parte de las respuestas esperadas.");
+        if (isCorrect) messages = ["Las dos medidas esperadas son la desvinculación de la empresa y la comunicación a las autoridades competentes."];
+      } else if (questionId === "q5") {
+        if (selected.length && selected[0] !== "H") {
+          messages.push(feedbackText.q5[selected[0]]);
+          messages.push("La respuesta esperada es «Todas las anteriores».");
+        } else if (isCorrect) {
+          messages.push(feedbackText.q5.H);
+        }
+      } else if (selected.length) {
+        messages.push(feedbackText[questionId][selected[0]]);
+      } else {
+        messages.push("No seleccionaste una respuesta. Revisa la pregunta e inténtalo de nuevo.");
+      }
+
+      box.className = `feedback show ${isCorrect ? "good" : "bad"}`;
+      box.textContent = (isCorrect ? "Respuesta correcta. " : "Revisa tu respuesta. ") + messages.join(" ");
+    }
+
+    function gradeQuiz() {
+      if (submitted) return;
+      const unanswered = Object.keys(answerKey).filter(id => selectedValues(id).length === 0);
+      if (unanswered.length) {
+        const firstId = unanswered[0];
+        const firstIndex = cards.findIndex(card => card.dataset.question === firstId);
+        showStep(firstIndex);
+        const first = cards[firstIndex];
+        first.querySelector(".feedback").className = "feedback show bad";
+        first.querySelector(".feedback").textContent = "Selecciona una respuesta antes de finalizar el quiz.";
+        first.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+
+      submitted = true;
+      let score = 0;
+      const details = [];
+      cards.forEach((card, index) => {
+        const id = card.dataset.question;
+        const selected = selectedValues(id);
+        const correct = sameAnswers(selected, answerKey[id]);
+        if (correct) score++;
+        renderFeedback(card, id, selected, correct);
+        card.querySelectorAll("input").forEach(input => input.disabled = true);
+        details.push(`<p><strong>Pregunta ${index + 1}:</strong> ${correct ? "Correcta" : "Incorrecta"}</p>`);
+      });
+
+      const percentage = Math.round(score / cards.length * 100);
+      document.getElementById("scoreText").textContent = `${score}/${cards.length} (${percentage}%)`;
+      document.getElementById("resultTitle").textContent =
+        score === cards.length ? "¡Excelente trabajo!" : score >= 3 ? "¡Buen trabajo!" : "Sigue practicando";
+      document.getElementById("resultMessage").textContent =
+        score === cards.length ? "Has respondido correctamente todas las preguntas." :
+        "Revisa la retroalimentación de cada pregunta para reforzar tus conocimientos.";
+      document.getElementById("resultDetails").innerHTML = details.join("");
+      resultCard.classList.add("show");
+      document.getElementById("submitBtn").disabled = true;
+      document.getElementById("prevBtn").disabled = true;
+      document.getElementById("nextBtn").hidden = true;
+      document.getElementById("submitBtn").hidden = true;
+      updateProgress();
+      resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function resetQuiz() {
+      form.reset();
+      submitted = false;
+      cards.forEach(card => {
+        const box = card.querySelector(".feedback");
+        box.className = "feedback";
+        box.textContent = "";
+        card.querySelectorAll("input").forEach(input => input.disabled = false);
+      });
+      resultCard.classList.remove("show");
+      document.getElementById("submitBtn").disabled = false;
+      currentStep = 0;
+      showStep(0);
+      updateProgress();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    form.addEventListener("change", updateProgress);
+    document.getElementById("prevBtn").addEventListener("click", () => {
+      showStep(currentStep - 1);
+      cards[currentStep].scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      const card = cards[currentStep];
+      const id = card.dataset.question;
+      if (selectedValues(id).length === 0) {
+        const box = card.querySelector(".feedback");
+        box.className = "feedback show bad";
+        box.textContent = "Selecciona una respuesta para continuar.";
+        return;
+      }
+      showStep(currentStep + 1);
+      cards[currentStep].scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    document.getElementById("submitBtn").addEventListener("click", gradeQuiz);
+    document.getElementById("resetBtn").addEventListener("click", resetQuiz);
+    document.getElementById("reviewBtn").addEventListener("click", () => {
+      cards[0].scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    showStep(0);
+    updateProgress();
+  </script>
+</body>
+</html>
